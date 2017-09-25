@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Plugin Name: WooCommerce CyberSource Secure Acceptance SOP Gateway - Developement
- * Plugin URI: 
+ * Plugin Name: WooCommerce CyberSource Secure Acceptance SOP Gateway
+ * Plugin URI:
  * Description: Adds the CyberSource Secure Acceptance Silent Order Post (SOP) payment gateway to your WooCommerce website. Requires an SSL certificate.
  * Author: Mikochi Mabingo
- * Author URI: 
+ * Author URI:
  * Version: 1.2.0-beta
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -43,9 +43,9 @@ class WC_Cybersource_Secure_Acceptance_SOP
 
 	/** gateway id */
 	const GATEWAY_ID = 'cybersource_secure_acceptance_sop';
-	
+
 	/** plugin text domain */
-	const TEXT_DOMAIN = 'wc-cybersource';	
+	const TEXT_DOMAIN = 'wc-cybersource';
 
 	/** @var string the plugin path */
 	private $plugin_path;
@@ -73,7 +73,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 
 		// Load the gateway
 		add_action( 'plugins_loaded', array( $this, 'load_classes' ) );
-		
+
 		// add a 'Configure' link to the plugin action links
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_manage_link' ), 10, 4 );    // remember, __FILE__ derefs symlinks :(
 
@@ -90,7 +90,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 
 		}
 
-		
+
 		// Unhook Woocommerce email notifications
 		add_action( 'woocommerce_email', array( $this, 'unhook_email_notifications' ) );
 
@@ -108,7 +108,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 		{
 			$this->response_url = str_replace( 'http:', 'https:', $this->response_url );
 		}
-	
+
 		// Payment listener/API hook
 		add_action( 'woocommerce_api_wc_gateway_cybersource_secure_acceptance_sop_response', array( $this, 'cybersource_relay_response' ) );
 	}
@@ -180,7 +180,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 		$wc_gateway_cybersource_secure_acceptance_sop->cybersource_response();
 	}
 
-	
+
 	/** Admin methods ******************************************************/
 
 
@@ -217,7 +217,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	public function log( $message )
 	{
 		global $woocommerce;
-		
+
 		if ( ! is_object( $this->logger ) )
 		{
 
@@ -288,20 +288,20 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	{
 		return $this->response_url;
 	}
-	
-	
+
+
 	/** Default Email Notification Override **********************************/
-	
+
 	public function unhook_email_notifications( $email_class )
 	{
- 
+
 		/**
 		 * Hooks for sending emails during store events
 		 **/
 	//	remove_action( 'woocommerce_low_stock_notification', array( $email_class, 'low_stock' ) );
 	//	remove_action( 'woocommerce_no_stock_notification', array( $email_class, 'no_stock' ) );
 	//	remove_action( 'woocommerce_product_on_backorder_notification', array( $email_class, 'backorder' ) );
-		
+
 		// New order emails
 		remove_action( 'woocommerce_order_status_pending_to_processing_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
 		remove_action( 'woocommerce_order_status_pending_to_completed_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
@@ -309,14 +309,14 @@ class WC_Cybersource_Secure_Acceptance_SOP
 		remove_action( 'woocommerce_order_status_failed_to_processing_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
 		remove_action( 'woocommerce_order_status_failed_to_completed_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
 		remove_action( 'woocommerce_order_status_failed_to_on-hold_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
-		
+
 		// Processing order emails
 		remove_action( 'woocommerce_order_status_pending_to_processing_notification', array( $email_class->emails['WC_Email_Customer_Processing_Order'], 'trigger' ) );
 		remove_action( 'woocommerce_order_status_pending_to_on-hold_notification', array( $email_class->emails['WC_Email_Customer_Processing_Order'], 'trigger' ) );
-		
+
 		// Completed order emails
 		remove_action( 'woocommerce_order_status_completed_notification', array( $email_class->emails['WC_Email_Customer_Completed_Order'], 'trigger' ) );
-			
+
 		// Note emails
 		remove_action( 'woocommerce_new_customer_note_notification', array( $email_class->emails['WC_Email_Customer_Note'], 'trigger' ) );
 	}
